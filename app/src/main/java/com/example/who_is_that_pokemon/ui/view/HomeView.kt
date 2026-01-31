@@ -51,9 +51,7 @@ fun HomeView() {
                     .fillMaxSize()
                     .padding(padding)
             ) {
-
                 MainView()
-
             }
         }
     )
@@ -111,7 +109,6 @@ fun MainView() {
                     unfocusedBorderColor = Color.Transparent,
                     disabledBorderColor = Color.Transparent,
                     errorBorderColor = Color.Transparent,
-
                     focusedContainerColor = SearchBackground,
                     unfocusedContainerColor = SearchBackground
                 )
