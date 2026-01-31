@@ -1,53 +1,66 @@
 package com.example.who_is_that_pokemon.model.entity
 
+import androidx.compose.ui.graphics.Color
 import com.google.gson.annotations.SerializedName
 
 data class Pokemon(
     @SerializedName("id")
-    val id : Int,
+    var id : Int,
     @SerializedName("name")
     val name : String,
     @SerializedName("height")
-    val height : Double,
+    var height : Double,
     @SerializedName("weight")
-    val weight : Double,
+    var weight : Double,
     @SerializedName("types")
-    val types : List<TypeSlot>,
+    var types : List<TypeSlot>,
     @SerializedName("sprites")
-    val sprites : Sprites,
+    var sprites : Sprites,
     @SerializedName("stats")
-    val stats : List<Stats>
+    var stats : List<Stats>,
+
+    var color : Color
 )
 
 data class TypeSlot (
     @SerializedName("slot")
-    val slot : Int,
+    var slot : Int,
     @SerializedName("type")
-    val type : Type
+    var type : Type
 )
 
 data class Type (
     @SerializedName("name")
-    val name: String,
+    var name: String,
     @SerializedName("url")
-    val url: String
+    var url: String
 )
 
 data class Sprites(
     @SerializedName("front_default")
-    val default : String,
+    var default : String = "",
     @SerializedName("front_shiny")
-    val shiny : String
+    var shiny : String = ""
 )
 
 data class Stats(
     @SerializedName("base_stat")
-    val value : Int,
+    var value : Int,
     @SerializedName("stat")
-    val stat : Stat
+    var stat : Stat
 )
 
 data class Stat(
     @SerializedName("name")
     val statName : String,
+)
+
+data class SpecieDetails(
+    @SerializedName("color")
+    val pokemonColor : PokemonColor
+)
+
+data class PokemonColor(
+    @SerializedName("name")
+    val colorName : String,
 )

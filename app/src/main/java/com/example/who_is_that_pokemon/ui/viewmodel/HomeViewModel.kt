@@ -8,7 +8,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
 import com.example.who_is_that_pokemon.model.entity.Pokemon
+import com.example.who_is_that_pokemon.model.entity.Sprites
 import com.example.who_is_that_pokemon.model.repository.remote.PokemonRepository
+import com.example.who_is_that_pokemon.ui.theme.PokemonBlack
+import com.example.who_is_that_pokemon.ui.theme.PokemonBlue
+import com.example.who_is_that_pokemon.ui.theme.PokemonBrown
+import com.example.who_is_that_pokemon.ui.theme.PokemonDefault
+import com.example.who_is_that_pokemon.ui.theme.PokemonGray
+import com.example.who_is_that_pokemon.ui.theme.PokemonGreen
+import com.example.who_is_that_pokemon.ui.theme.PokemonPink
+import com.example.who_is_that_pokemon.ui.theme.PokemonPurple
+import com.example.who_is_that_pokemon.ui.theme.PokemonRed
+import com.example.who_is_that_pokemon.ui.theme.PokemonWhite
+import com.example.who_is_that_pokemon.ui.theme.PokemonYellow
 import kotlinx.coroutines.launch
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
@@ -32,15 +44,85 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 {
                     val body = response.body()
 
-                    if (body != null && body.pokemons.isNotEmpty()) {
-                        _displayedPokemon.value = body.pokemons
-                    }
+                    if (body != null && body.pokemons.isNotEmpty())
+                        fillAllPokemonInfo(body.pokemons)
                 }
-
             }
         } catch (e : Exception)
         {
             Toast.makeText(application, e.message, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    fun fillAllPokemonInfo(allPokemon: List<Pokemon>)
+    {
+        viewModelScope.launch {
+            for (pokemon in allPokemon)
+            {
+                val response = pokemonRepository.getPokemonByName(pokemon.name)
+
+                if (response.isSuccessful && response.body() != null) {
+                    val body = response.body()
+
+                    fillPokemonInfo(pokemon, body)
+                }
+            }
+
+            _displayedPokemon.value = allPokemon
+        }
+    }
+
+    fun fillPokemonInfo(newPokemon: Pokemon, body : Pokemon?)
+    {
+        newPokemon.weight = body?.weight!!
+        newPokemon.height = body.height
+        newPokemon.id = body.id
+        fillAllPokemonStats(newPokemon, body)
+        fillPokemonSprites(newPokemon, body)
+        fillPokemonTypes(newPokemon, body)
+        fillPokemonColor(newPokemon)
+    }
+
+    fun fillAllPokemonStats(newPokemon: Pokemon, body : Pokemon?)
+    {
+        if (body != null && body.stats.isNotEmpty())
+            newPokemon.stats = body.stats
+    }
+
+    fun fillPokemonSprites(newPokemon: Pokemon, body : Pokemon?)
+    {
+        if (body != null)
+        {
+            newPokemon.sprites = Sprites()
+            newPokemon.sprites.default = body.sprites.default
+            newPokemon.sprites.shiny = body.sprites.shiny
+        }
+    }
+
+    fun fillPokemonTypes(newPokemon: Pokemon, body : Pokemon?)
+    {
+        if (body != null && body.types.isNotEmpty())
+            newPokemon.types = body.types
+    }
+
+    fun fillPokemonColor(pokemon : Pokemon)
+    {
+        viewModelScope.launch {
+            val pokemonColor = pokemonRepository.getPokemonColorByName(pokemon.name)
+
+            pokemon.color = when (pokemonColor) {
+                "red" -> PokemonRed
+                "blue" -> PokemonBlue
+                "yellow" -> PokemonYellow
+                "green" -> PokemonGreen
+                "black" -> PokemonBlack
+                "white" -> PokemonWhite
+                "gray" -> PokemonGray
+                "pink" -> PokemonPink
+                "purple" -> PokemonPurple
+                "brown" -> PokemonBrown
+                else -> PokemonDefault
+            }
         }
     }
 

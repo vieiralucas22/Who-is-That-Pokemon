@@ -36,10 +36,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.who_is_that_pokemon.R
-import com.example.who_is_that_pokemon.ui.theme.Pink80
-import com.example.who_is_that_pokemon.ui.theme.PrimaryColorPokedex
-import com.example.who_is_that_pokemon.ui.theme.PurpleGrey40
+import com.example.who_is_that_pokemon.model.entity.Pokemon
+import com.example.who_is_that_pokemon.ui.theme.PokemonRed
 import com.example.who_is_that_pokemon.ui.theme.SearchBackground
 import com.example.who_is_that_pokemon.ui.theme.White
 import com.example.who_is_that_pokemon.ui.viewmodel.HomeViewModel
@@ -128,10 +128,10 @@ fun MainView(viewModel: HomeViewModel) {
                 shape = RoundedCornerShape(16.dp),
                 contentPadding = PaddingValues(0.dp),
                 colors = ButtonColors(
-                    containerColor = PrimaryColorPokedex,
-                    contentColor = PrimaryColorPokedex,
-                    disabledContainerColor = PrimaryColorPokedex,
-                    disabledContentColor = PrimaryColorPokedex
+                    containerColor = PokemonRed,
+                    contentColor = PokemonRed,
+                    disabledContainerColor = PokemonRed,
+                    disabledContentColor = PokemonRed
                 )
             ) {
                 Icon(
@@ -148,16 +148,13 @@ fun MainView(viewModel: HomeViewModel) {
             if (allPokemon.isNullOrEmpty())
             {
 
-            } else{
+            } else {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     modifier = Modifier.fillMaxSize(),
                 ) {
                     itemsIndexed(allPokemon) { index, pokemon ->
-                        PokemonItem(
-                            name = pokemon.name,
-                            id = index
-                        )
+                        PokemonItem(pokemon)
                     }
                 }
             }
@@ -165,39 +162,30 @@ fun MainView(viewModel: HomeViewModel) {
 }
 
 @Composable
-fun PokemonItem(name : String, id: Int) {
-
-    val idInPokedex = id + 1;
-
+fun PokemonItem(pokemon : Pokemon) {
     Column(
         modifier = Modifier
             .heightIn(min = 200.dp)
             .padding(4.dp)
-            .background(PurpleGrey40, RoundedCornerShape(20.dp))
+            .background(pokemon.color, RoundedCornerShape(20.dp))
             .padding(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
 
-        Column(
-            modifier = Modifier
-                .width(100.dp)
-                .height(100.dp)
-                .background(Pink80)
+        AsyncImage(
+            model = pokemon.sprites.default,
+            contentDescription = pokemon.name,
+            modifier = Modifier.size(150.dp)
         )
-        {
-
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = name.replaceFirstChar { it.uppercase() },
+            text = pokemon.name.replaceFirstChar { it.uppercase() },
             style = MaterialTheme.typography.titleMedium
         )
 
         Text(
-            text = idInPokedex.toString(),
+            text = "# " + pokemon.id,
             style = MaterialTheme.typography.bodyMedium,
             color = Color.Gray
         )

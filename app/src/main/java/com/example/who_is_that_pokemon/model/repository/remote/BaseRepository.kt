@@ -12,7 +12,7 @@ import retrofit2.Response
 open class BaseRepository (private val context: Context){
 
     @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
-    private fun isConnectionAvailable() : Boolean {
+    protected fun isConnectionAvailable() : Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         var result = false
 
