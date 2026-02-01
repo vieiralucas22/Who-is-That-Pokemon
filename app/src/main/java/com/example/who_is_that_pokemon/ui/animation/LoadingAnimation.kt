@@ -69,9 +69,6 @@ fun LoadingAnimation(
                         shape = CircleShape
                     )
             )
-            {
-
-            }
         }
     }
 

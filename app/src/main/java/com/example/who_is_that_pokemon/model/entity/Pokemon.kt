@@ -45,7 +45,7 @@ data class Sprites(
 
 data class Stats(
     @SerializedName("base_stat")
-    var value : Int,
+    var value : Float,
     @SerializedName("stat")
     var stat : Stat
 )
@@ -57,7 +57,14 @@ data class Stat(
 
 data class SpecieDetails(
     @SerializedName("color")
-    val pokemonColor : PokemonColor
+    val pokemonColor : PokemonColor,
+    @SerializedName("flavor_text_entries")
+    val descriptions : List<PokemonDescription>
+)
+
+data class PokemonDescription(
+    @SerializedName("flavor_text")
+    var text : String
 )
 
 data class PokemonColor(

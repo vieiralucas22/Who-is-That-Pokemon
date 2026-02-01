@@ -139,9 +139,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     fun fillPokemonColor(pokemon: Pokemon) {
         viewModelScope.launch {
-            val pokemonColor = pokemonRepository.getPokemonColorByName(pokemon.name)
+            val pokemonColor = pokemonRepository.getPokemonSpecieByName(pokemon.name)
 
-            pokemon.color = when (pokemonColor) {
+            pokemon.color = when (pokemonColor?.pokemonColor?.colorName) {
                 "red" -> PokemonRed
                 "blue" -> PokemonBlue
                 "yellow" -> PokemonYellow

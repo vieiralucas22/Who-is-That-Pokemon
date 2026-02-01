@@ -1,6 +1,7 @@
 package com.example.who_is_that_pokemon.ui.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -40,9 +41,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.who_is_that_pokemon.R
 import com.example.who_is_that_pokemon.model.entity.Pokemon
+import com.example.who_is_that_pokemon.ui.Routes
 import com.example.who_is_that_pokemon.ui.animation.LoadingAnimation
 import com.example.who_is_that_pokemon.ui.theme.PokemonRed
 import com.example.who_is_that_pokemon.ui.theme.SearchBackground
@@ -50,7 +53,7 @@ import com.example.who_is_that_pokemon.ui.theme.White
 import com.example.who_is_that_pokemon.ui.viewmodel.HomeViewModel
 
 @Composable
-fun HomeView(viewModel: HomeViewModel) {
+fun HomeView(viewModel: HomeViewModel, navController: NavHostController) {
 
     Scaffold(
         content = { padding ->
@@ -59,14 +62,14 @@ fun HomeView(viewModel: HomeViewModel) {
                     .fillMaxSize()
                     .padding(padding)
             ) {
-                MainView(viewModel)
+                MainView(viewModel, navController)
             }
         }
     )
 }
 
 @Composable
-fun MainView(viewModel: HomeViewModel) {
+fun MainView(viewModel: HomeViewModel, navController: NavHostController) {
     val searchHeight = 56.dp
     val allPokemon by viewModel.displayedPokemon.observeAsState(emptyList())
     val gridState = rememberLazyGridState()
@@ -166,33 +169,39 @@ fun MainView(viewModel: HomeViewModel) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-            if (allPokemon.isNullOrEmpty())
-            {
-                Column (modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center){
-                    LoadingAnimation(circleSize = 30.dp, spaceBetween = 20.dp, travelDistance = 20.dp)
-                }
-            } else {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    modifier = Modifier.fillMaxSize(),
-                    state = gridState,
-                ) {
-                    itemsIndexed(allPokemon) { index, pokemon ->
-                        PokemonItem(pokemon)
-                    }
+        if (allPokemon.isNullOrEmpty()) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                LoadingAnimation(circleSize = 30.dp, spaceBetween = 20.dp, travelDistance = 20.dp)
+            }
+        } else {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier.fillMaxSize(),
+                state = gridState,
+            ) {
+                itemsIndexed(allPokemon) { index, pokemon ->
+                    PokemonItem(pokemon, navController)
                 }
             }
+        }
     }
 }
 
 @Composable
-fun PokemonItem(pokemon : Pokemon) {
+fun PokemonItem(pokemon: Pokemon, navController: NavHostController) {
     Column(
         modifier = Modifier
             .heightIn(min = 200.dp)
             .padding(4.dp)
             .background(pokemon.color, RoundedCornerShape(20.dp))
-            .padding(12.dp),
+            .padding(12.dp)
+            .clickable(onClick = {
+                navController.navigate(Routes.PokemonDetailsView + "/" + pokemon.name)
+            }),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {

@@ -4,6 +4,7 @@ import android.app.Application
 import com.example.who_is_that_pokemon.exception.NoInternetException
 import com.example.who_is_that_pokemon.model.entity.InitialPokemonResponse
 import com.example.who_is_that_pokemon.model.entity.Pokemon
+import com.example.who_is_that_pokemon.model.entity.SpecieDetails
 import com.example.who_is_that_pokemon.model.repository.remote.retrofit.RetrofitClient
 import com.example.who_is_that_pokemon.model.repository.remote.service.PokemonService
 import retrofit2.Response
@@ -33,7 +34,7 @@ class PokemonRepository(application: Application) : BaseRepository(application) 
         }
     }
 
-    suspend fun getPokemonColorByName(name : String) : String?
+    suspend fun getPokemonSpecieByName(name : String) : SpecieDetails?
     {
         if (!isConnectionAvailable()){
             throw NoInternetException("No internet available")
@@ -48,7 +49,7 @@ class PokemonRepository(application: Application) : BaseRepository(application) 
                 if (specie?.pokemonColor == null)
                     return null
 
-                return specie.pokemonColor.colorName
+                return specie
             }
 
         return null
