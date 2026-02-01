@@ -26,6 +26,7 @@ class PokemonDetailsViewModel(application: Application) : BaseViewModel(applicat
     var description by mutableStateOf("")
     var sprite by mutableStateOf("")
     var color by mutableStateOf(White)
+    var wasFound by mutableStateOf(false)
     private val _pokemonStats = MutableLiveData(emptyList<Stats>())
     val pokemonStats: LiveData<List<Stats>> = _pokemonStats
 
@@ -35,9 +36,10 @@ class PokemonDetailsViewModel(application: Application) : BaseViewModel(applicat
 
     private var currentPokemonName = ""
 
-
     fun loadPokemonInformation()
     {
+        if (currentPokemonName.isEmpty()) return
+
         if (isLoading) return
 
         isLoading = true
@@ -45,7 +47,7 @@ class PokemonDetailsViewModel(application: Application) : BaseViewModel(applicat
         viewModelScope.launch {
 
             try {
-                val response = pokemonRepository.getPokemonByName(currentPokemonName)
+                val response = pokemonRepository.getPokemonByNameOrId(currentPokemonName)
 
                 if (response.isSuccessful && response.body() != null) {
                     val specie = pokemonRepository.getPokemonSpecieByName(currentPokemonName)
@@ -61,10 +63,15 @@ class PokemonDetailsViewModel(application: Application) : BaseViewModel(applicat
                         color = pokemon.color
                         _pokemonStats.value = pokemon.stats
                         _pokemonTypes.value = pokemon.types
+                        wasFound = true
                     }
+                } else
+                {
+                    wasFound = false
                 }
             } catch (e : Exception)
             {
+                wasFound = false
                 Toast.makeText(application, e.message, Toast.LENGTH_LONG).show()
             } finally {
                 isLoading = false
@@ -110,5 +117,6 @@ class PokemonDetailsViewModel(application: Application) : BaseViewModel(applicat
         color = White
         _pokemonStats.value = emptyList()
         _pokemonTypes.value = emptyList()
+        wasFound = false
     }
 }

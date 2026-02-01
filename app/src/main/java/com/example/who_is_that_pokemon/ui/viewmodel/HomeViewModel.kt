@@ -93,7 +93,7 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
     fun fillAllPokemonInfo(allPokemon: List<Pokemon>) {
         viewModelScope.launch {
             for (pokemon in allPokemon) {
-                val response = pokemonRepository.getPokemonByName(pokemon.name)
+                val response = pokemonRepository.getPokemonByNameOrId(pokemon.name)
 
                 if (response.isSuccessful && response.body() != null) {
                     val body = response.body()

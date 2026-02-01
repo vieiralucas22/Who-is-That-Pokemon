@@ -1,5 +1,6 @@
 package com.example.who_is_that_pokemon.ui.view
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,14 +32,18 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.who_is_that_pokemon.R
 import com.example.who_is_that_pokemon.model.entity.Stats
 import com.example.who_is_that_pokemon.model.entity.TypeSlot
 import com.example.who_is_that_pokemon.ui.animation.LoadingAnimation
+import com.example.who_is_that_pokemon.ui.theme.PokemonBlack
 import com.example.who_is_that_pokemon.ui.theme.PurpleGrey40
 import com.example.who_is_that_pokemon.ui.theme.SearchBackground
 import com.example.who_is_that_pokemon.ui.theme.White
@@ -72,15 +77,48 @@ fun PokemonDetailsView(viewModel: PokemonDetailsViewModel) {
 
             ) {
 
-                HeaderView(viewModel)
+                if (viewModel.wasFound) {
 
-                AsyncImage(
-                    model = viewModel.sprite,
-                    contentDescription = viewModel.pokemonName,
-                    modifier = Modifier.size(200.dp)
-                )
+                    HeaderView(viewModel)
 
-                MainView(viewModel)
+                    AsyncImage(
+                        model = viewModel.sprite,
+                        contentDescription = viewModel.pokemonName,
+                        modifier = Modifier.size(200.dp)
+                    )
+
+                    MainView(viewModel)
+                } else {
+
+                    Column(
+                        modifier = Modifier.padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+
+                        Text(
+                            text = "Pokemon not found!",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontSize = 24.sp,
+                            color = PokemonBlack,
+                            textAlign = TextAlign.Center
+                        )
+
+                        Image(
+                            modifier = Modifier.width(300.dp),
+                            painter = painterResource(R.drawable.not_found),
+                            contentDescription = "Pokemon not found"
+                        )
+
+                        Text(
+                            text = "Please back and try again.",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontSize = 24.sp,
+                            color = PokemonBlack,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
             }
 
         }

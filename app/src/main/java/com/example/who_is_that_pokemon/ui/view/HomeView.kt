@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -23,6 +24,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -33,7 +35,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -73,6 +77,7 @@ fun MainView(viewModel: HomeViewModel, navController: NavHostController) {
     val searchHeight = 56.dp
     val allPokemon by viewModel.displayedPokemon.observeAsState(emptyList())
     val gridState = rememberLazyGridState()
+    var pokemonSearch by remember { mutableStateOf("")}
 
     val shouldLoadMore by remember {
         derivedStateOf {
@@ -115,57 +120,37 @@ fun MainView(viewModel: HomeViewModel, navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Row {
-            OutlinedTextField(
-                value = "",
-                onValueChange = { it ->
-                },
-                modifier = Modifier
-                    .weight(0.80f)
-                    .height(searchHeight)
-                    .background(SearchBackground, RoundedCornerShape(16.dp)),
-                placeholder = { Text("Search Pokémon") },
-                singleLine = true,
-                shape = RoundedCornerShape(16.dp),
-                leadingIcon = {
+        OutlinedTextField(
+            value = pokemonSearch,
+            onValueChange = { it ->
+                pokemonSearch = it
+            },
+            modifier = Modifier
+                .height(searchHeight)
+                .background(SearchBackground, RoundedCornerShape(16.dp))
+                .fillMaxWidth(),
+            placeholder = { Text("Search Pokemon") },
+            singleLine = true,
+            shape = RoundedCornerShape(16.dp),
+            leadingIcon = {
+                IconButton(onClick = {
+                    navController.navigate(Routes.PokemonDetailsView + "/" + pokemonSearch.lowercase().trim())
+                })
+                {
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = "Search"
                     )
-                }, colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent,
-                    disabledBorderColor = Color.Transparent,
-                    errorBorderColor = Color.Transparent,
-                    focusedContainerColor = SearchBackground,
-                    unfocusedContainerColor = SearchBackground
-                )
+                }
+            }, colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
+                disabledBorderColor = Color.Transparent,
+                errorBorderColor = Color.Transparent,
+                focusedContainerColor = SearchBackground,
+                unfocusedContainerColor = SearchBackground
             )
-
-            Spacer(modifier = Modifier.width(4.dp))
-
-            Button(
-                onClick = {},
-                modifier = Modifier
-                    .weight(0.18f)
-                    .height(searchHeight),
-                shape = RoundedCornerShape(16.dp),
-                contentPadding = PaddingValues(0.dp),
-                colors = ButtonColors(
-                    containerColor = PokemonRed,
-                    contentColor = PokemonRed,
-                    disabledContainerColor = PokemonRed,
-                    disabledContentColor = PokemonRed
-                )
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_filter),
-                    contentDescription = "",
-                    tint = White,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-        }
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 

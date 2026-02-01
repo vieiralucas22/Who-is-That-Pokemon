@@ -20,17 +20,10 @@ class PokemonRepository(application: Application) : BaseRepository(application) 
         }
     }
 
-    suspend fun getPokemonById(id : Int) : Response<Pokemon>
+    suspend fun getPokemonByNameOrId(name : String) : Response<Pokemon>
     {
         return safeApiCall {
-            pokemonService.getPokemonById(id)
-        }
-    }
-
-    suspend fun getPokemonByName(name : String) : Response<Pokemon>
-    {
-        return safeApiCall {
-            pokemonService.getPokemonByName(name)
+            pokemonService.getPokemonByNameOrId(name)
         }
     }
 
