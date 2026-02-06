@@ -3,6 +3,7 @@ package com.example.who_is_that_pokemon.ui.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,6 +30,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -72,20 +75,41 @@ fun PokemonDetailsView(viewModel: PokemonDetailsViewModel) {
             ) {
 
                 if (viewModel.isLoading) {
-                    LoadingAnimation(circleSize = 50.dp, travelDistance = 40.dp, spaceBetween = 12.dp)
+                    LoadingAnimation(
+                        circleSize = 50.dp,
+                        travelDistance = 40.dp,
+                        spaceBetween = 12.dp
+                    )
                 } else {
                     if (viewModel.shouldShowNotFoundComponent) {
                         NotFoundPokemonComponent()
                     } else {
                         HeaderView(viewModel)
 
-                        AsyncImage(
-                            model = viewModel.sprite,
-                            contentDescription = viewModel.pokemonName,
-                            modifier = Modifier.size(200.dp)
-                        )
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.pokeball_icon),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .align(Alignment.CenterEnd)
+                                    .size(250.dp)
+                                    .alpha(0.15f)
+                                    .rotate(315f)
+                            )
 
+                            AsyncImage(
+                                model = viewModel.sprite,
+                                contentDescription = viewModel.pokemonName,
+                                modifier = Modifier
+                                    .size(200.dp)
+                                    .align(Alignment.Center)
+                            )
+
+                        }
                         MainView(viewModel)
+
                     }
                 }
             }
@@ -94,8 +118,7 @@ fun PokemonDetailsView(viewModel: PokemonDetailsViewModel) {
 }
 
 @Composable
-fun NotFoundPokemonComponent()
-{
+fun NotFoundPokemonComponent() {
     Column(
         modifier = Modifier.padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
