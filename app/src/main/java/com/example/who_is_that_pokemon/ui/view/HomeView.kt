@@ -64,6 +64,7 @@ fun HomeView(viewModel: HomeViewModel, navController: NavHostController) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(White)
                     .padding(padding)
             ) {
                 MainView(viewModel, navController)
